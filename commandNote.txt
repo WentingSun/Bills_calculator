@@ -1,0 +1,1 @@
+python bills.py > *fileName.txt

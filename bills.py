@@ -12,7 +12,7 @@ def getDB():
     url = "https://api.notion.com/v1/databases/"+secret.database_id
 
     headers = {
-        "Authorization": f"{secret.token}",
+        "Authorization": "Bearer " + f"{secret.token}",
         "accept": "application/json",
         "Notion-Version": "2022-06-28"
     }
@@ -33,7 +33,7 @@ def queryDB() -> list:
         "page_size": 1000,
         }
     headers = {
-        "Authorization": f"{secret.token}",
+        "Authorization": "Bearer " + f"{secret.token}",
         "accept": "application/json",
         "Notion-Version": "2022-06-28",
         "content-type": "application/json",
@@ -44,12 +44,12 @@ def queryDB() -> list:
     result = json.loads(response.text)
     finalresult = [result]
     
-    
-    while result["has_more"] == True:
-        payload["start_cursor"] = result["next_cursor"]
-        response = requests.post(url,json=payload,headers=headers)
-        result =json.loads(response.text)
-        finalresult.append(result)
+    #
+    # while result["has_more"] == True:
+    #     payload["start_cursor"] = result["next_cursor"]
+    #     response = requests.post(url,json=payload,headers=headers)
+    #     result =json.loads(response.text)
+    #     finalresult.append(result)
     
     return finalresult
 
@@ -110,6 +110,7 @@ def calculate():
     total = 0
     rangeTotal = 0
     rangeIndex = 0
+    dueDate = "2022-11-20"
     # print(len(data["results"]))
     categoryTotal = {}
     for d in data:
@@ -140,8 +141,8 @@ def calculate():
                 total += amount
                 
                 #Check TransAction In Date Range
-                if date == "None" or datetime.datetime.fromisoformat(date) < datetime.datetime.fromisoformat("2022-11-20"):
-                    print(f"date {date} is before 2022-11-20. PASS")
+                if date == "None" or datetime.datetime.fromisoformat(date) < datetime.datetime.fromisoformat(dueDate):
+                    print(f"date {date} is before {dueDate}. PASS")
                     continue
                 
                 #Range Statistics
@@ -215,3 +216,5 @@ def calculate():
     
 if __name__ == "__main__":
     calculate()
+    # data = queryDB()
+    # pprint(data)
